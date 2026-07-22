@@ -25,7 +25,9 @@ transporter.verify((error, success) => {
   }
 });
 
-export const sendEmail = async (to, subject, text, html) => {
+export const sendEmail = async ({ to, subject, text, html }) => {
+      console.log("TO:", to);
+  console.log("SUBJECT:", subject);
   try {
     const info = await transporter.sendMail({
       from: process.env.EMAIL_FROM,
