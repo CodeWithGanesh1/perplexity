@@ -1,4 +1,7 @@
 import nodemailer from "nodemailer";
+import dns from "dns";
+
+dns.setDefaultResultOrder("ipv4first");
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -8,7 +11,12 @@ const transporter = nodemailer.createTransport({
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
         clientId: process.env.GOOGLE_CLIENT_ID
-    }
+    },
+    family: 4,
+    // reasonable timeouts so it fails fast instead of hanging
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 10000,
 })
 
 transporter.verify()
