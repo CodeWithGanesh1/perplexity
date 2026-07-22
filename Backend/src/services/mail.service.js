@@ -1,21 +1,37 @@
-import { Resend } from "resend";
+import Mailjet from "node-mailjet";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const mailjet = Mailjet.apiConnect(
+    process.env.MAILJET_API_KEY,
+    process.env.MAILJET_SECRET_KEY
+);
 
 export async function sendEmail({ to, subject, html, text }) {
-    const { data, error } = await resend.emails.send({
-        from: "onboarding@resend.dev", // testing ke liye; production mein apna verified domain daalna
-        to,
-        subject,
-        html,
-        text,
-    });
+    try {
+        const result = await mailjet
+            .post("send", { version: "v3.1" })
+            .request({
+                Messages: [
+                    {
+                        From: {
+                            Email: "gk9605873@gmail.com", // apna verified sender email
+                            Name: "Perplexity",
+                        },
+                        To: [
+                            {
+                                Email: to,
+                            },
+                        ],
+                        Subject: subject,
+                        HTMLPart: html,
+                        TextPart: text,
+                    },
+                ],
+            });
 
-    if (error) {
+        console.log("Email sent:", result.body);
+        return result.body;
+    } catch (error) {
         console.error("Email sending failed:", error);
         throw error;
     }
-
-    console.log("Email sent:", data);
-    return data;
 }
