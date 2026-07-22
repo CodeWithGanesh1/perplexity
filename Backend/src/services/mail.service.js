@@ -16,6 +16,7 @@ export const transporter = nodemailer.createTransport({
   }
 });
 
+
 transporter.verify((error, success) => {
   if (error) {
     console.log("VERIFY ERROR => ", error);
@@ -27,7 +28,7 @@ transporter.verify((error, success) => {
 export const sendEmail = async (to, subject, text, html) => {
   try {
     const info = await transporter.sendMail({
-      from: "akashdivakar1221@gmail.com",
+      from: process.env.EMAIL_FROM,
       to,
       subject,
       text,
