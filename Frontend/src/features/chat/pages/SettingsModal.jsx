@@ -58,7 +58,7 @@ export const SettingsModal = ({ onClose, currentUser, lang, changeLang, t }) => 
     setLoading(true)
     setStatus(null)
     try {
-      const res = await fetch('http://localhost:3000/api/auth/update-profile', {
+      const res = await fetch('https://perplexity-a4uh.onrender.com/api/auth/update-profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -82,7 +82,7 @@ export const SettingsModal = ({ onClose, currentUser, lang, changeLang, t }) => 
     setLoading(true)
     setStatus(null)
     try {
-      const res = await fetch('http://localhost:3000/api/auth/change-password', {
+      const res = await fetch('https://perplexity-a4uh.onrender.com/api/auth/change-password', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
