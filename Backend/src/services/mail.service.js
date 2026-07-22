@@ -1,39 +1,21 @@
-import nodemailer from "nodemailer";
-import dns from "dns";
+import { Resend } from "resend";
 
-dns.setDefaultResultOrder("ipv4first");
-
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        type: 'OAuth2',
-        user: process.env.GOOGLE_USER,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-        clientId: process.env.GOOGLE_CLIENT_ID
-    },
-    family: 4,
-    // reasonable timeouts so it fails fast instead of hanging
-    connectionTimeout: 10000,
-    greetingTimeout: 10000,
-    socketTimeout: 10000,
-})
-
-transporter.verify()
-    .then(() => { console.log("Email transporter is ready to send emails"); })
-    .catch((err) => { console.error("Email transporter verification failed:", err); });
-
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendEmail({ to, subject, html, text }) {
-
-    const mailOptions = {
-        from: process.env.GOOGLE_USER,
+    const { data, error } = await resend.emails.send({
+        from: "onboarding@resend.dev", // testing ke liye; production mein apna verified domain daalna
         to,
         subject,
         html,
-        text
-    };
+        text,
+    });
 
-    const details = await transporter.sendMail(mailOptions);
-    console.log("Email sent:", details);
+    if (error) {
+        console.error("Email sending failed:", error);
+        throw error;
+    }
+
+    console.log("Email sent:", data);
+    return data;
 }
